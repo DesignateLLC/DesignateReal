@@ -105,6 +105,11 @@ app.post("/contact", (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
+// Serve login page
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"));
+});
 app.get("/check-login", (req, res) => {
   if (req.session.user) {
     res.json({ loggedIn: true, user: req.session.user });

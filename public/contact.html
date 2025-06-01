@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Spartan Go</title>
+</head>
+<body>
+  <h1>Contact Spartan Go</h1>
+
+  <form id="contact-form">
+    <label>Your Name: <input type="text" name="name" required></label><br><br>
+    <label>Your Email: <input type="email" name="email" required></label><br><br>
+    <label>Message:<br>
+      <textarea name="message" rows="5" cols="30" required></textarea>
+    </label><br><br>
+
+    <button type="submit">Send Message</button>
+  </form>
+
+  <p id="response-msg"></p>
+
+  <script>
+    document.getElementById("contact-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        message: formData.get("message"),
+      };
+
+      const res = await fetch("/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const responseMsg = document.getElementById("response-msg");
+      if (res.ok) {
+        responseMsg.textContent = "Message sent successfully!";
+        e.target.reset();
+      } else {
+        responseMsg.textContent = "Failed to send message.";
+      }
+    });
+  </script>
+</body>
+</html>

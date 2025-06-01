@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Spartan Go - Login</title>
+  </head>
+  <body>
+    <h1>Login to Spartan Go</h1>
+    <form id="login-form">
+
+      <label for="email">Email:</label><br />
+      <input type="email" id="email" name="email" required /><br /><br />
+
+      <label for="password">Password:</label><br />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+      /><br /><br />
+
+      <button type="submit">Login</button>
+    </form>
+    <script>
+      document.getElementById("login-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = {
+          email: formData.get("email"),
+          password: formData.get("password"),
+        };
+
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const message = await res.text();
+        alert(message);
+      });
+    </script>
+
+  </body>
+</html>
+app.post('/login', (req, res) => { const { email, password } = req.body; //
+Check if user exists const user = users.find(u => u.email === email); if (!user)
+{ return res.status(400).send('User not found'); } // Check password (simple
+check, no hashing yet) if (user.password !== password) { return
+res.status(400).send('Incorrect password'); } res.send(`Welcome back,
+${user.name}! You are logged in.`); });

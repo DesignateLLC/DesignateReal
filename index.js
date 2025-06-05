@@ -49,23 +49,23 @@ function saveUsers(users) {
 app.post("/signup", (req, res) => {
   const { name, email, password, terms } = req.body;
   if (!name || !email || !password) {
-    return res.status(400).send("Please fill in all required fields.");
+    return res.status(400).json({ error: "Please fill in all required fields." });
   }
 
   if (!terms) {
-    return res.status(400).send("You must agree to the terms and conditions.");
+    return res.status(400).json({ error: "You must agree to the terms and conditions." });
   }
 
   const users = loadUsers();
 
   if (users.find(user => user.email === email)) {
-    return res.status(409).send("Email already registered. Please log in instead.");
+    return res.status(409).json({ error: "Email already registered. Please log in instead." });
   }
 
   users.push({ name, email, password });
   saveUsers(users);
 
-  res.status(200).send("User registered successfully.");
+  res.status(200).json({ message: "User registered successfully." });
 });
 
 // Login route

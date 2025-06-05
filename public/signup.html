@@ -1,69 +1,138 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Spartan Go - Sign Up</title>
-  </head>
-  <body>
-    <h1>Sign Up for Spartan Go</h1>
-    <h2>Create an Account</h2>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designate - Sign Up</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #000000, #1a1a1a, #333333);
+      background-size: 300% 300%;
+      animation: bgShift 20s ease infinite;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFD700;
+    }
+
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #FFD700, #FFB700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .signup-container {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #222;
+      color: #FFD700;
+      font-size: 1rem;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    button[type="submit"] {
+      background: linear-gradient(to right, #FFD700, #FFB700);
+      color: #000;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+
+    button[type="submit"]:hover {
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>Create a Designate Account</h1>
+  <div class="signup-container">
     <form id="signup-form">
-      <input
-        type="text"
-        name="name"
-        placeholder="Full Name"
-        required
-      /><br /><br />
-      <input
-        type="email"
-        name="email"
-        placeholder="Email Address"
-        required
-      /><br /><br />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-      /><br /><br />
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="password" name="password" placeholder="Password" required />
       <label>
         <input type="checkbox" name="terms" value="yes" required />
         I agree to the terms and conditions
-      </label><br /><br />
-
+      </label><br />
       <button type="submit">Sign Up</button>
     </form>
+  </div>
 
-    <script>
-      document.getElementById("signup-form").addEventListener("submit", async function (e) {
-        e.preventDefault();
+  <script>
+    document.getElementById("signup-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-        const form = e.target;
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+      const form = e.target;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
 
-        try {
-          const response = await fetch("/signup", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
+      try {
+        const response = await fetch("/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
-          if (response.ok) {
-            alert("Signup successful! You can now log in.");
-            window.location.href = "/login";
-          } else {
-            const result = await response.json().catch(() => ({}));
-            const message = result.error || "Signup failed. Please try again.";
-            alert(message);
-          }
-        } catch (err) {
-          alert("Something went wrong. Please try again.");
-          console.error(err);
+        if (response.ok) {
+          alert("Signup successful! You can now log in.");
+          window.location.href = "/login";
+        } else {
+          const result = await response.json().catch(() => ({}));
+          const message = result.error || "Signup failed. Please try again.";
+          alert(message);
         }
-      });
-    </script>
-  </body>
+      } catch (err) {
+        alert("Something went wrong. Please try again.");
+        console.error(err);
+      }
+    });
+  </script>
+</body>
 </html>

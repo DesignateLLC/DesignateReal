@@ -2,80 +2,197 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spartan Go Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designate Dashboard</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    header {
-      text-align: center;
-      padding: 10px 0;
-      background-color: #007BFF;
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #000000, #1a1a1a, #333333);
+      background-size: 300% 300%;
+      animation: bgShift 20s ease infinite;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
       color: white;
     }
+
+    body.dark-mode {
+      background: linear-gradient(135deg, #000000, #0a0a0a, #1e1e1e);
+      color: white;
+    }
+
+    body.light-mode {
+      background: linear-gradient(135deg, #ffffff, #fefefe, #dddddd);
+      color: #000;
+    }
+
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header {
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .title {
+      font-size: 3.2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #FFD700, #FFB700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .container {
-      width: 80%;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      width: 90%;
+      max-width: 500px;
+      animation: fadeInUp 1.2s ease both;
     }
-    h1 {
-      margin: 0;
+
+    body.light-mode .container {
+      background: rgba(255, 255, 255, 0.7);
     }
+
     #welcome-message {
-      margin: 20px 0;
-      font-size: 1.2em;
+      font-size: 1.5rem;
+      margin-bottom: 25px;
     }
-    button {
-      background-color: #dc3545;
+
+    #logout-btn, #toggle-theme {
+      background: linear-gradient(to right, #ef4444, #f87171);
       color: white;
       border: none;
-      padding: 10px 15px;
+      padding: 12px 28px;
+      font-size: 16px;
+      border-radius: 50px;
       cursor: pointer;
-      border-radius: 5px;
+      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+      transition: all 0.3s ease;
+      margin: 10px;
     }
-    button:hover {
-      background-color: #c82333;
+
+    #logout-btn:hover, #toggle-theme:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.6);
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Flame effect using canvas */
+    canvas#flames {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
   </style>
 </head>
-<body>
+<body class="dark-mode">
+  <canvas id="flames"></canvas>
   <header>
-    <h1>Welcome to Spartan Go Dashboard</h1>
+    <h1 class="title">Welcome to Designate</h1>
   </header>
+
   <div class="container">
     <div id="welcome-message">Welcome to your dashboard!</div>
     <button id="logout-btn">Log Out</button>
+    <button id="toggle-theme">Toggle Theme</button>
   </div>
 
   <script>
-    // Check login status and get user info
     async function checkLogin() {
       const res = await fetch('/check-login');
       const data = await res.json();
-
       if (data.loggedIn) {
         document.getElementById('welcome-message').textContent = `Hello, ${data.user.name}!`;
       } else {
-        // Not logged in, redirect to login page
         window.location.href = '/login.html';
       }
     }
 
-    // Logout button handler
     document.getElementById('logout-btn').addEventListener('click', async () => {
       await fetch('/logout', { method: 'POST' });
       window.location.href = '/login.html';
     });
 
-    // Call checkLogin on page load
+    document.getElementById('toggle-theme').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
+    });
+
     checkLogin();
+
+    // Flame canvas animation
+    const canvas = document.getElementById('flames');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    for (let i = 0; i < 150; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: canvas.height,
+        speed: Math.random() * 2 + 0.5,
+        radius: Math.random() * 4 + 1,
+        alpha: Math.random(),
+        color: `rgba(255, ${Math.floor(Math.random() * 100 + 100)}, 0, 0.5)`
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        p.y -= p.speed;
+        p.alpha -= 0.005;
+        if (p.alpha <= 0 || p.y < 0) {
+          p.x = Math.random() * canvas.width;
+          p.y = canvas.height;
+          p.speed = Math.random() * 2 + 0.5;
+          p.radius = Math.random() * 4 + 1;
+          p.alpha = Math.random();
+          p.color = `rgba(255, ${Math.floor(Math.random() * 100 + 100)}, 0, 0.5)`;
+        }
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
 </body>
 </html>

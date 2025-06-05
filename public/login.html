@@ -55,3 +55,4 @@ Check if user exists const user = users.find(u => u.email === email); if (!user)
 check, no hashing yet) if (user.password !== password) { return
 res.status(400).send('Incorrect password'); } res.send(`Welcome back,
 ${user.name}! You are logged in.`); });
+<p>Forgot your password? <a href="/reset_password.html">Reset it here</a></p>

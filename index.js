@@ -49,23 +49,24 @@ function saveUsers(users) {
 app.post("/signup", (req, res) => {
   const { name, email, password, terms } = req.body;
   if (!name || !email || !password) {
-    return res.status(400).json({ error: "Please fill in all required fields." });
+    return res.status(400).send("Please fill in all required fields.");
   }
 
   if (!terms) {
-    return res.status(400).json({ error: "You must agree to the terms and conditions." });
+    return res.status(400).send("You must agree to the terms and conditions.");
   }
 
   const users = loadUsers();
 
+  // Check if the email is already registered
   if (users.find(user => user.email === email)) {
-    return res.status(409).json({ error: "Email already registered. Please log in instead." });
+    return res.status(409).json({ error: "Signup failed: Email already registered. Please log in instead." });
   }
 
   users.push({ name, email, password });
   saveUsers(users);
 
-  res.status(200).json({ message: "User registered successfully." });
+  res.status(200).send("User registered successfully.");
 });
 
 // Login route
@@ -130,8 +131,31 @@ app.get("/check-login", (req, res) => {
     res.json({ loggedIn: false });
   }
 });
+app.get("/signup", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "signup.html"));
+});
 
 // Start server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
+});
+
+// Reset password route
+app.post("/reset-password", (req, res) => {
+  const { email, newPassword } = req.body;
+  if (!email || !newPassword) {
+    return res.status(400).json({ error: "Email and new password are required." });
+  }
+
+  const users = loadUsers();
+  const user = users.find(u => u.email === email);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found." });
+  }
+
+  user.password = newPassword; // Update the user's password
+  saveUsers(users);
+
+  res.status(200).json({ message: "Password reset successfully." });
 });

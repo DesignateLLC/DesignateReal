@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spartan Go Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      padding: 10px 0;
+      background-color: #007BFF;
+      color: white;
+    }
+    .container {
+      width: 80%;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin: 0;
+    }
+    #welcome-message {
+      margin: 20px 0;
+      font-size: 1.2em;
+    }
+    button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Spartan Go Dashboard</h1>
+  </header>
+  <div class="container">
+    <div id="welcome-message">Welcome to your dashboard!</div>
+    <button id="logout-btn">Log Out</button>
+  </div>
+
+  <script>
+    // Check login status and get user info
+    async function checkLogin() {
+      const res = await fetch('/check-login');
+      const data = await res.json();
+
+      if (data.loggedIn) {
+        document.getElementById('welcome-message').textContent = `Hello, ${data.user.name}!`;
+      } else {
+        // Not logged in, redirect to login page
+        window.location.href = '/login.html';
+      }
+    }
+
+    // Logout button handler
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await fetch('/logout', { method: 'POST' });
+      window.location.href = '/login.html';
+    });
+
+    // Call checkLogin on page load
+    checkLogin();
+  </script>
+</body>
+</html>

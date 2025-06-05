@@ -36,8 +36,14 @@
           body: JSON.stringify(data),
         });
 
-        const message = await res.text();
-        alert(message);
+        if (res.ok) {
+          alert("Login successful!");
+          window.location.href = "/dashboard.html"; // Change this to the page you want after login
+        } else {
+          const message = await res.text();
+          alert(message);
+        }
+
       });
     </script>
 

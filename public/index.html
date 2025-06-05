@@ -1,5 +1,6 @@
 <body>
   <h1>Welcome to Spartan Go</h1>
+  <div id="login-status">Checking login status...</div>
 
   <form id="signup-form">
     <label>Full Name: <input type="text" name="name" required></label><br><br>
@@ -14,6 +15,9 @@
     <button type="submit">Create Account</button>
   </form>
 
+  <!-- 👇 New login link for returning users -->
+  <p>Already have an account? <a href="/login.html" id="login-link">Log in here</a></p>
+
   <p>Questions? Email us at <a href="mailto:maxandsama@gmail.com">maxandsama@gmail.com</a></p>
 
   <script>
@@ -24,7 +28,7 @@
         name: formData.get("name"),
         email: formData.get("email"),
         password: formData.get("password"),
-        terms:formData.get("terms"),
+        terms: formData.get("terms"),
       };
 
       const res = await fetch("/signup", {
@@ -34,10 +38,49 @@
       });
 
       if (res.ok) {
-        alert("Account created successfully!");
+        alert("Account created successfully! You will be redirected to the login page.");
+        window.location.href = "/login.html";  // Redirect user to login page
       } else {
         alert("Signup failed.");
       }
     });
+
+    // ✅ Check login status
+    fetch("/check-login")
+      .then(res => res.json())
+      .then(data => {
+        const statusDiv = document.getElementById("login-status");
+        if (data.loggedIn) {
+          statusDiv.textContent = `Logged in as ${data.user.name}`;
+          // 👇 Redirect to dashboard if already logged in
+          window.location.href = "/dashboard.html";  // Replace with your actual dashboard page
+        } else {
+          statusDiv.textContent = "Not logged in.";
+        }
+      })
+      .catch(err => {
+        console.error("Error checking login status:", err);
+        document.getElementById("login-status").textContent = "Login status unavailable.";
+      });
   </script>
+
+  <br><br>
+  <a href="/logout.html">Log Out</a>
 </body>
+// Serve homepage
+app.get("/", (req, res) => {
+  if (req.session.user) {
+    return res.redirect("/dashboard.html");
+  }
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});async function checkLogin() {
+  const res = await fetch('/check-login');
+  const data = await res.json();
+
+  if (data.loggedIn) {
+    document.getElementById('welcome-message').textContent = `Hello, ${data.user.name}!`;
+  } else {
+    // Not logged in, redirect to login page
+    window.location.href = '/login.html';
+  }
+}

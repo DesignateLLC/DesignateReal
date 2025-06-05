@@ -41,7 +41,9 @@
         alert("Account created successfully! You will be redirected to the login page.");
         window.location.href = "/login.html";  // Redirect user to login page
       } else {
-        alert("Signup failed.");
+        const result = await res.json().catch(() => ({}));
+        const message = result.error || "Signup failed.";
+        alert(message);
       }
     });
 

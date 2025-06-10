@@ -98,7 +98,8 @@
             <input type="email" id="email" name="email" required /><br /><br />
 
             <label for="password">Password:</label><br />
-            <input type="password" id="password" name="password" required /><br /><br />
+            <input type="password" id="password" name="password" required /><br />
+            <input type="checkbox" id="toggle-password">Show password</input><br /><br />
 
             <button type="submit">Login</button>
         </form>
@@ -127,6 +128,11 @@
                 const message = await res.text();
                 alert(message);
             }
+        });
+
+        document.getElementById('toggle-password').addEventListener('change', function() {
+            const passwordField = document.getElementById('password');
+            passwordField.type = this.checked ? 'text' : 'password';
         });
     </script>
     <button id="home-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; padding: 10px 20px; background: rgba(255, 215, 0, 0.8); border: none; border-radius: 5px; cursor: pointer;">

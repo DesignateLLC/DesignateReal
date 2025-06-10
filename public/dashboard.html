@@ -194,5 +194,14 @@
       canvas.height = window.innerHeight;
     });
   </script>
+  <button id="home-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; padding: 10px 20px; background: rgba(255, 215, 0, 0.8); border: none; border-radius: 5px; cursor: pointer;">
+    Home
+  </button>
+
+  <script>
+      document.getElementById("home-btn").addEventListener("click", function() {
+          window.location.href = "/"; // Redirects to the homepage, which is your signup page
+      });
+  </script>
 </body>
 </html>

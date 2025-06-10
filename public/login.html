@@ -1,58 +1,142 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <title>Spartan Go - Login</title>
-  </head>
-  <body>
-    <h1>Login to Spartan Go</h1>
-    <form id="login-form">
-
-      <label for="email">Email:</label><br />
-      <input type="email" id="email" name="email" required /><br /><br />
-
-      <label for="password">Password:</label><br />
-      <input
-        type="password"
-        id="password"
-        name="password"
-        required
-      /><br /><br />
-
-      <button type="submit">Login</button>
-    </form>
-    <script>
-      document.getElementById("login-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const data = {
-          email: formData.get("email"),
-          password: formData.get("password"),
-        };
-
-        const res = await fetch("/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-
-        if (res.ok) {
-          alert("Login successful!");
-          window.location.href = "/dashboard.html"; // Change this to the page you want after login
-        } else {
-          const message = await res.text();
-          alert(message);
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Designate - Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-      });
-    </script>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000, #1a1a1a, #333333); /* Matching background */
+            background-size: 300% 300%;
+            animation: bgShift 20s ease infinite; /* Animated background */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+        }
 
-  </body>
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #FFD700;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            background: #222;
+            color: #FFD700;
+            font-size: 1rem;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(to right, #ef4444, #f87171);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(to right, #f87171, #ef4444);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        p {
+            margin-top: 15px;
+            color: #ccc;
+        }
+
+        a {
+            color: #FFD700;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login to Designate</h1>
+        <form id="login-form">
+            <label for="email">Email:</label><br />
+            <input type="email" id="email" name="email" required /><br /><br />
+
+            <label for="password">Password:</label><br />
+            <input type="password" id="password" name="password" required /><br /><br />
+
+            <button type="submit">Login</button>
+        </form>
+        <p>Forgot your password? <a href="/reset_password.html">Reset it here</a></p>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                email: formData.get("email"),
+                password: formData.get("password"),
+            };
+
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+
+            if (res.ok) {
+                alert("Login successful!");
+                window.location.href = "/dashboard.html"; // Change this to the page you want after login
+            } else {
+                const message = await res.text();
+                alert(message);
+            }
+        });
+    </script>
+    <button id="home-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; padding: 10px 20px; background: rgba(255, 215, 0, 0.8); border: none; border-radius: 5px; cursor: pointer;">
+        Home
+    </button>
+
+    <script>
+        document.getElementById("home-btn").addEventListener("click", function() {
+            window.location.href = "/"; // Redirects to the homepage, which is your signup page
+        });
+    </script>
+</body>
 </html>
-app.post('/login', (req, res) => { const { email, password } = req.body; //
-Check if user exists const user = users.find(u => u.email === email); if (!user)
-{ return res.status(400).send('User not found'); } // Check password (simple
-check, no hashing yet) if (user.password !== password) { return
-res.status(400).send('Incorrect password'); } res.send(`Welcome back,
-${user.name}! You are logged in.`); });
-<p>Forgot your password? <a href="/reset_password.html">Reset it here</a></p>

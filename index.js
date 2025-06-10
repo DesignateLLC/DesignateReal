@@ -5,7 +5,7 @@ const fs = require("fs");
 const session = require("express-session");
 
 const app = express();
-const port = 3000;
+const port = 3000; // You can also change the port to 5000 if needed.
 
 // Session setup
 app.use(session({
@@ -95,13 +95,6 @@ app.post("/logout", (req, res) => {
   });
 });
 
-app.get("/logout", (req, res) => {
-  req.session.destroy(err => {
-    if (err) return res.status(500).send("Logout failed.");
-    res.send("You have been logged out.");
-  });
-});
-
 // Contact form
 app.post("/contact", (req, res) => {
   const { name, email, message } = req.body;
@@ -131,13 +124,15 @@ app.get("/check-login", (req, res) => {
     res.json({ loggedIn: false });
   }
 });
+
+// Signup page
 app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "signup.html"));
 });
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on http://0.0.0.0:${port}`);
 });
 
 // Reset password route

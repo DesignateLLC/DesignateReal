@@ -161,9 +161,15 @@
       }
     });
 
-    document.getElementById('toggle-password').addEventListener('change', function() {
+    document.getElementById('toggle-password').addEventListener('click', function() {
       const passwordField = document.getElementById('password');
-      passwordField.type = this.checked ? 'text' : 'password';
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        this.textContent = '🙈';
+      } else {
+        passwordField.type = 'password';
+        this.textContent = '👁';
+      }
     });
   </script>
 </body>

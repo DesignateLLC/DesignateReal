@@ -1,37 +1,23 @@
 [
   {
     "name": "Max Javor",
-    "email": "sshuttle478@gmail.com",
-    "password": "123456"
-  },
-  {
-    "name": "Max Javor",
-    "email": "maxjavor9@gmail.com",
-    "password": "123456"
-  },
-  {
-    "name": "Max Javor",
     "email": "epicmrmax@gmail.com",
-    "password": "123456"
+    "password": "123456",
+    "isVerified": true,
+    "verificationToken": null
+  },
+  {
+    "name": "Max Javor",
+    "email": "sshuttle478@gmail.com",
+    "password": "123456",
+    "isVerified": true,
+    "verificationToken": null
   },
   {
     "name": "Max Javor",
     "email": "maxjav56@gmail.com",
-    "password": "123456"
-  },
-  {
-    "name": "Sama Khalid",
-    "email": "sama4j7@gmail.com",
-    "password": "123456"
-  },
-  {
-    "name": "Les Javor",
-    "email": "lescellphone@gmail.com",
-    "password": "123456"
-  },
-  {
-    "name": "Emilio Ansara",
-    "email": "emilio2724@icloud.com",
-    "password": "123456"
+    "password": "123456",
+    "isVerified": true,
+    "verificationToken": null
   }
 ]

@@ -1,26 +1,8 @@
-
-
-<style>
-  a {
-    color: #FFD700; /* Gold color for text */
-    font-weight: bold;
-    text-decoration: none;
-    background-color: transparent; /* Make background transparent */
-    padding: 10px 20px; /* Padding for button effect */
-    border-radius: 5px; /* Rounded corners */
-    transition: box-shadow 0.3s; /* Smooth transition for glow */
-  }
-
-  a:hover {
-    color: #FFD700; /* Keep text gold on hover */
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7); /* Glow effect */
-  }
-</style>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Designate - Sign Up</title>
   <style>
     * {
@@ -34,12 +16,14 @@
       background: linear-gradient(135deg, #000000, #1a1a1a, #333333);
       background-size: 300% 300%;
       animation: bgShift 20s ease infinite;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #FFD700;
+      padding: 20px;
+      overflow-y: auto;
+      flex-direction: column;
     }
 
     @keyframes bgShift {
@@ -51,24 +35,28 @@
     h1 {
       font-size: 3rem;
       margin-bottom: 20px;
-      background: linear-gradient(90deg, #FFD700, #FFB700);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      text-align: center;
+      color: #FFD700;
     }
 
     .signup-container {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 40px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px 50px;
       border-radius: 15px;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
-      width: 90%;
-      max-width: 400px;
+      box-shadow: 
+        0 8px 20px rgba(255, 215, 0, 0.6), 
+        0 -8px 20px rgba(255, 215, 0, 0.6),
+        0 0 30px rgba(255, 215, 0, 0.4);
+      width: 100%;
+      max-width: 480px;
       text-align: center;
+      box-sizing: border-box;
     }
 
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="text"]#confirm-password {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -77,18 +65,52 @@
       background: #222;
       color: #FFD700;
       font-size: 1rem;
+      box-sizing: border-box;
     }
 
-    input[type="checkbox"] {
-      transform: scale(1.2);
+    .password-container {
+      position: relative;
+      width: 100%;
+      margin: 10px 0;
+      display: inline-block;
+    }
+
+    .toggle-password-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #FFD700;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0;
+      width: 50px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
     }
 
     label {
       font-size: 0.9rem;
       color: #ccc;
+      user-select: none;
+      display: block;
+      margin-top: 10px;
+      text-align: left;
     }
 
-    button[type="submit"] {
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    button[type="submit"],
+    .login-btn {
       background: linear-gradient(to right, #FFD700, #FFB700);
       color: #000;
       border: none;
@@ -100,59 +122,198 @@
       margin-top: 15px;
     }
 
-    button[type="submit"]:hover {
+    button[type="submit"]:hover,
+    .login-btn:hover {
       box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
       transform: scale(1.05);
+    }
+
+    a {
+      color: #FFD700;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    p {
+      margin-top: 20px;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    #strength-display,
+    #match-display {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    #signup-success-message {
+      margin-top: 15px;
+      font-weight: bold;
+      color: limegreen;
+      display: none;
+    }
+
+    /* ===== Mobile Responsive ===== */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .signup-container {
+        padding: 25px 20px;
+      }
+
+      input,
+      button[type="submit"],
+      .login-btn {
+        font-size: 0.95rem;
+        padding: 10px 16px;
+      }
+
+      #strength-display,
+      #match-display {
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Create a Designate Account</h1>
   <div class="signup-container">
+    <h1>Create a Designate Account</h1>
     <form id="signup-form">
-      <input type="text" name="name" placeholder="Full Name" required />
-      <input type="email" name="email" placeholder="Email Address" required />
-      <input type="password" name="password" placeholder="Password" required />
+      <input type="text" name="name" placeholder="Full Name" required autocomplete="name" />
+      <input type="email" name="email" placeholder="Email Address" required autocomplete="email" />
+
+      <label for="password">Password:</label>
+      <div class="password-container">
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+          autocomplete="new-password"
+        />
+        <button type="button" class="toggle-password-btn" id="toggle-password">Show</button>
+      </div>
+      <div id="strength-display"></div>
+
+      <label for="confirm-password">Confirm Password:</label>
+      <div class="password-container">
+        <input
+          type="text"
+          id="confirm-password"
+          name="confirm-password"
+          placeholder="Confirm Password"
+          required
+          autocomplete="new-password"
+        />
+      </div>
+      <div id="match-display"></div>
+
       <label>
         <input type="checkbox" name="terms" value="yes" required />
-        I agree to the terms and conditions
-      </label><br />
+        I agree to the <a href="/terms.html" target="_blank">terms and conditions</a>
+      </label>
+
       <button type="submit">Sign Up</button>
     </form>
-    <p style="margin-top: 20px; color: #ccc;">Already have an account? <a href="/login.html" style="color: #FFD700;">Log in here</a></p>
+
+    <div id="signup-success-message">Signup successful! Please check your email to verify your account.</div>
+
+    <p>
+      Already have an account?
+      <button onclick="window.location.href='/login.html'" class="login-btn">Log in here</button>
+    </p>
   </div>
 
   <script>
-    document.getElementById("signup-form").addEventListener("submit", async function (e) {
-      e.preventDefault();
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirm-password');
+      const strengthDisplay = document.getElementById('strength-display');
+      const matchDisplay = document.getElementById('match-display');
+      const successMessage = document.getElementById('signup-success-message');
 
-      const form = e.target;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+      toggleBtn.addEventListener('click', () => {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        toggleBtn.textContent = type === 'password' ? 'Show' : 'Hide';
+      });
 
-      try {
-        const response = await fetch("/signup", {
+      function getPasswordStrength(password) {
+        let score = 0;
+        if (password.length >= 8) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/\d/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+
+        if (score <= 2) return { label: "Weak", color: "red" };
+        if (score === 3) return { label: "Moderate", color: "orange" };
+        return { label: "Strong", color: "limegreen" };
+      }
+
+      passwordInput.addEventListener('input', () => {
+        const strength = getPasswordStrength(passwordInput.value);
+        strengthDisplay.textContent = `Strength: ${strength.label}`;
+        strengthDisplay.style.color = strength.color;
+      });
+
+      function updateMatchDisplay() {
+        const password = passwordInput.value;
+        const confirm = confirmPasswordInput.value;
+
+        if (confirm === "") {
+          matchDisplay.textContent = "";
+        } else if (password === confirm) {
+          matchDisplay.textContent = "Passwords match";
+          matchDisplay.style.color = "limegreen";
+        } else {
+          matchDisplay.textContent = "Passwords do not match";
+          matchDisplay.style.color = "red";
+        }
+      }
+
+      passwordInput.addEventListener('input', updateMatchDisplay);
+      confirmPasswordInput.addEventListener('input', updateMatchDisplay);
+
+      document.getElementById("signup-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (passwordInput.value !== confirmPasswordInput.value) {
+          alert("Passwords do not match.");
+          return;
+        }
+
+        const formData = new FormData(e.target);
+        const data = {
+          name: formData.get("name"),
+          email: formData.get("email"),
+          password: formData.get("password"),
+          terms: formData.get("terms"),
+        };
+
+        const res = await fetch("/signup", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         });
 
-        if (response.ok) {
-          alert("Signup successful! You can now log in.");
-          window.location.href = "/login";
+        if (res.ok) {
+          successMessage.style.display = "block";
+          document.getElementById("signup-form").reset();
         } else {
-          const result = await response.json().catch(() => ({}));
-          const message = result.error || "Signup failed. Please try again.";
+          const message = await res.text();
           alert(message);
         }
-      } catch (err) {
-        alert("Something went wrong. Please try again.");
-        console.error(err);
-      }
+      });
     });
   </script>
-  
 </body>
 </html>

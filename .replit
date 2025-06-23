@@ -16,3 +16,4 @@ ignorePorts = false
 [[ports]]
 localPort = 3000
 externalPort = 80
+run = "source .aliases && node index.js"

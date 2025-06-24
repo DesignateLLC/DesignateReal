@@ -5,7 +5,7 @@ const fs = require("fs");
 const session = require("express-session");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-require("dotenv").config(); // load .env file for secrets
+require("dotenv").config();
 
 const app = express();
 const port = 3000;
@@ -59,6 +59,8 @@ const transporter = nodemailer.createTransport({
 // =====================
 app.post("/signup", (req, res) => {
   const { name, email, password, terms } = req.body;
+  const normalizedEmail = email.toLowerCase();
+
   if (!name || !email || !password) {
     return res.status(400).send("Please fill in all required fields.");
   }
@@ -67,15 +69,15 @@ app.post("/signup", (req, res) => {
   }
 
   const users = loadUsers();
-  if (users.find(user => user.email === email)) {
-    return res.status(409).json({ error: "Signup failed: Email already registered. Please log in instead." });
+  if (users.find(user => user.email === normalizedEmail)) {
+    return res.status(409).send("Account already exists. Please log in.");
   }
 
   const verificationToken = crypto.randomBytes(32).toString('hex');
 
   users.push({
     name,
-    email,
+    email: normalizedEmail,
     password,
     isVerified: false,
     verificationToken
@@ -84,7 +86,7 @@ app.post("/signup", (req, res) => {
 
   const mailOptions = {
     from: 'maxandsama@gmail.com',
-    to: email,
+    to: normalizedEmail,
     subject: 'Verify your email - Designate',
     html: `
       <h2>Welcome to Designate, ${name}!</h2>
@@ -122,8 +124,10 @@ app.get("/verify", (req, res) => {
 // =====================
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
+  const normalizedEmail = email.toLowerCase();
+
   const users = loadUsers();
-  const user = users.find(u => u.email === email);
+  const user = users.find(u => u.email === normalizedEmail);
 
   if (!user) return res.status(400).send("Login failed: User not found");
   if (!user.isVerified) return res.status(403).send("Login failed: Email not verified. Please check your email.");
@@ -158,10 +162,12 @@ app.post("/contact", (req, res) => {
 // =====================
 app.post("/request-reset-code", (req, res) => {
   const { email } = req.body;
+  const normalizedEmail = email.toLowerCase();
+
   if (!email) return res.status(400).json({ error: "Email is required." });
 
   const users = loadUsers();
-  const user = users.find(u => u.email === email);
+  const user = users.find(u => u.email === normalizedEmail);
   if (!user) return res.status(404).json({ error: "No account found with that email." });
 
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -170,7 +176,7 @@ app.post("/request-reset-code", (req, res) => {
 
   const mailOptions = {
     from: 'maxandsama@gmail.com',
-    to: email,
+    to: normalizedEmail,
     subject: 'Your Designate Password Reset Code',
     html: `<p>Your password reset code is: <strong>${resetCode}</strong></p>`
   };
@@ -186,6 +192,8 @@ app.post("/request-reset-code", (req, res) => {
 
 app.post("/reset-password", (req, res) => {
   const { email, resetCode, newPassword, confirmPassword } = req.body;
+  const normalizedEmail = email.toLowerCase();
+
   if (!email || !resetCode || !newPassword || !confirmPassword) {
     return res.status(400).json({ error: "All fields are required." });
   }
@@ -195,7 +203,7 @@ app.post("/reset-password", (req, res) => {
   }
 
   const users = loadUsers();
-  const user = users.find(u => u.email === email);
+  const user = users.find(u => u.email === normalizedEmail);
   if (!user) return res.status(404).json({ error: "User not found." });
   if (user.resetCode !== resetCode) {
     return res.status(403).json({ error: "Invalid reset code." });

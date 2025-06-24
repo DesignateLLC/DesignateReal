@@ -5,19 +5,5 @@
     "password": "123456",
     "isVerified": true,
     "verificationToken": null
-  },
-  {
-    "name": "Max Javor",
-    "email": "sshuttle478@gmail.com",
-    "password": "123456",
-    "isVerified": true,
-    "verificationToken": null
-  },
-  {
-    "name": "Max Javor",
-    "email": "maxjav56@gmail.com",
-    "password": "123456",
-    "isVerified": true,
-    "verificationToken": null
   }
 ]

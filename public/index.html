@@ -50,13 +50,11 @@
       width: 100%;
       max-width: 480px;
       text-align: center;
-      box-sizing: border-box;
     }
 
     input[type="text"],
     input[type="email"],
-    input[type="password"],
-    input[type="text"]#confirm-password {
+    input[type="password"] {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -65,14 +63,12 @@
       background: #222;
       color: #FFD700;
       font-size: 1rem;
-      box-sizing: border-box;
     }
 
     .password-container {
       position: relative;
       width: 100%;
       margin: 10px 0;
-      display: inline-block;
     }
 
     .toggle-password-btn {
@@ -96,11 +92,10 @@
 
     label {
       font-size: 0.9rem;
-      color: #ccc;
-      user-select: none;
+      color: #FFD700;
       display: block;
       margin-top: 10px;
-      text-align: left;
+      text-align: center;
     }
 
     input[type="checkbox"] {
@@ -119,7 +114,7 @@
       border-radius: 30px;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-top: 15px;
+      margin-top: 20px;
     }
 
     button[type="submit"]:hover,
@@ -139,15 +134,17 @@
 
     p {
       margin-top: 20px;
-      color: #ccc;
+      color: #FFD700;
       font-size: 0.9rem;
+      text-align: center;
     }
 
     #strength-display,
     #match-display {
-      margin-top: 5px;
+      margin-top: 8px;
       font-size: 0.9rem;
-      text-align: left;
+      color: #FFD700;
+      text-align: center;
     }
 
     #signup-success-message {
@@ -157,7 +154,33 @@
       display: none;
     }
 
-    /* ===== Mobile Responsive ===== */
+    #accountExistsModal {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      z-index: 1000;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 0 0 10px #FFD700;
+    }
+
+    #accountExistsModal button {
+      padding: 8px 16px;
+      border: none;
+      background: #FFD700;
+      color: #000;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
     @media (max-width: 480px) {
       h1 {
         font-size: 2rem;
@@ -190,28 +213,14 @@
 
       <label for="password">Password:</label>
       <div class="password-container">
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          required
-          autocomplete="new-password"
-        />
+        <input type="password" id="password" name="password" placeholder="Password" required autocomplete="new-password" />
         <button type="button" class="toggle-password-btn" id="toggle-password">Show</button>
       </div>
       <div id="strength-display"></div>
 
       <label for="confirm-password">Confirm Password:</label>
       <div class="password-container">
-        <input
-          type="text"
-          id="confirm-password"
-          name="confirm-password"
-          placeholder="Confirm Password"
-          required
-          autocomplete="new-password"
-        />
+        <input type="text" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required autocomplete="new-password" />
       </div>
       <div id="match-display"></div>
 
@@ -225,10 +234,13 @@
 
     <div id="signup-success-message">Signup successful! Please check your email to verify your account.</div>
 
-    <p>
-      Already have an account?
-      <button onclick="window.location.href='/login.html'" class="login-btn">Log in here</button>
-    </p>
+    <p>Already have an account?</p>
+    <button onclick="window.location.href='/login.html'" class="login-btn">Log in here</button>
+  </div>
+
+  <div id="accountExistsModal">
+    <p>Account already exists. Please log in.</p>
+    <button onclick="document.getElementById('accountExistsModal').style.display='none'">OK</button>
   </div>
 
   <script>
@@ -310,7 +322,11 @@
           document.getElementById("signup-form").reset();
         } else {
           const message = await res.text();
-          alert(message);
+          if (message === "Account already exists. Please log in.") {
+            document.getElementById("accountExistsModal").style.display = "block";
+          } else {
+            alert(message);
+          }
         }
       });
     });

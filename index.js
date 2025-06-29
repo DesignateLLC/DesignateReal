@@ -1,17 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-const fs = require("fs");
 const session = require("express-session");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
 const port = 3000;
-
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
+const client = new MongoClient(process.env.MONGO_URI);
+let usersCollection;
 
 app.use(session({
   secret: 'spartan_go_secret_key',
@@ -23,30 +24,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-const USERS_FILE = path.join(__dirname, 'users.json');
-
-if (!fs.existsSync(USERS_FILE)) {
-  fs.writeFileSync(USERS_FILE, '[]', 'utf-8');
+// MongoDB utility functions
+async function loadUsers() {
+  return await usersCollection.find().toArray();
 }
 
-function loadUsers() {
-  try {
-    const data = fs.readFileSync(USERS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error("Error reading users.json:", err);
-    return [];
-  }
+async function saveUser(user) {
+  await usersCollection.insertOne(user);
 }
 
-function saveUsers(users) {
-  try {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-  } catch (err) {
-    console.error("Error writing to users.json:", err);
-  }
+async function updateUser(email, updates) {
+  await usersCollection.updateOne({ email }, { $set: updates });
 }
 
+// Email transport
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -58,7 +49,7 @@ const transporter = nodemailer.createTransport({
 // =====================
 // Signup
 // =====================
-app.post("/signup", (req, res) => {
+app.post("/signup", async (req, res) => {
   const { name, email, password, terms } = req.body;
   const normalizedEmail = email.toLowerCase();
 
@@ -69,21 +60,20 @@ app.post("/signup", (req, res) => {
     return res.status(400).send("You must agree to the terms and conditions.");
   }
 
-  const users = loadUsers();
+  const users = await loadUsers();
   if (users.find(user => user.email === normalizedEmail)) {
     return res.status(409).send("Account already exists. Please log in.");
   }
 
   const verificationToken = crypto.randomBytes(32).toString('hex');
 
-  users.push({
+  await saveUser({
     name,
     email: normalizedEmail,
     password,
     isVerified: false,
     verificationToken
   });
-  saveUsers(users);
 
   const mailOptions = {
     from: 'maxandsama@gmail.com',
@@ -107,30 +97,31 @@ app.post("/signup", (req, res) => {
   });
 });
 
-app.get("/verify", (req, res) => {
+app.get("/verify", async (req, res) => {
   const { token } = req.query;
-  const users = loadUsers();
+  const users = await loadUsers();
   const user = users.find(u => u.verificationToken === token);
 
   if (!user) {
     return res.status(400).send("Invalid or expired verification token.");
   }
 
-  user.isVerified = true;
-  user.verificationToken = null;
-  saveUsers(users);
+  await updateUser(user.email, {
+    isVerified: true,
+    verificationToken: null
+  });
+
   res.send("Your email has been verified. You may now log in.");
 });
 
 // =====================
 // Login / Logout
 // =====================
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const normalizedEmail = email.toLowerCase();
 
-  const users = loadUsers();
-  const user = users.find(u => u.email === normalizedEmail);
+  const user = await usersCollection.findOne({ email: normalizedEmail });
 
   if (!user) return res.status(400).send("Login failed: User not found");
   if (!user.isVerified) return res.status(403).send("Login failed: Email not verified. Please check your email.");
@@ -163,19 +154,17 @@ app.post("/contact", (req, res) => {
 // =====================
 // Password Reset
 // =====================
-app.post("/request-reset-code", (req, res) => {
+app.post("/request-reset-code", async (req, res) => {
   const { email } = req.body;
   const normalizedEmail = email.toLowerCase();
 
   if (!email) return res.status(400).json({ error: "Email is required." });
 
-  const users = loadUsers();
-  const user = users.find(u => u.email === normalizedEmail);
+  const user = await usersCollection.findOne({ email: normalizedEmail });
   if (!user) return res.status(404).json({ error: "No account found with that email." });
 
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
-  user.resetCode = resetCode;
-  saveUsers(users);
+  await updateUser(normalizedEmail, { resetCode });
 
   const mailOptions = {
     from: 'maxandsama@gmail.com',
@@ -193,7 +182,7 @@ app.post("/request-reset-code", (req, res) => {
   });
 });
 
-app.post("/reset-password", (req, res) => {
+app.post("/reset-password", async (req, res) => {
   const { email, resetCode, newPassword, confirmPassword } = req.body;
   const normalizedEmail = email.toLowerCase();
 
@@ -205,16 +194,16 @@ app.post("/reset-password", (req, res) => {
     return res.status(400).json({ error: "Passwords do not match." });
   }
 
-  const users = loadUsers();
-  const user = users.find(u => u.email === normalizedEmail);
+  const user = await usersCollection.findOne({ email: normalizedEmail });
   if (!user) return res.status(404).json({ error: "User not found." });
   if (user.resetCode !== resetCode) {
     return res.status(403).json({ error: "Invalid reset code." });
   }
 
-  user.password = newPassword;
-  delete user.resetCode;
-  saveUsers(users);
+  await updateUser(normalizedEmail, {
+    password: newPassword,
+    resetCode: null
+  });
 
   res.status(200).json({ message: "Password has been reset." });
 });
@@ -245,17 +234,23 @@ app.get("/check-login", (req, res) => {
 // =====================
 // Admin Count
 // =====================
-app.get("/admin/user-count", (req, res) => {
+app.get("/admin/user-count", async (req, res) => {
   const adminKey = req.query.key;
   if (adminKey !== process.env.ADMIN_SECRET) {
     return res.status(403).send("Unauthorized access.");
   }
 
-  const users = loadUsers();
-  const userCount = users.length;
-  res.json({ userCount });
+  const count = await usersCollection.countDocuments();
+  res.json({ userCount: count });
 });
 
-app.listen(port, "0.0.0.0", () => {
+// =====================
+// Start Server and Connect to DB
+// =====================
+app.listen(port, "0.0.0.0", async () => {
+  await client.connect();
+  const db = client.db("designate");
+  usersCollection = db.collection("users");
+  console.log("Connected to MongoDB");
   console.log(`Server running on http://0.0.0.0:${port}`);
 });

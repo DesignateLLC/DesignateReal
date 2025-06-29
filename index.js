@@ -10,7 +10,8 @@ require("dotenv").config();
 const app = express();
 const port = 3000;
 
-const PUBLIC_URL = "https://454cac8e-b261-4165-8fb2-d2be2f076037-00-1wijfywg4wqol.worf.replit.dev";
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+
 
 app.use(session({
   secret: 'spartan_go_secret_key',
@@ -91,7 +92,7 @@ app.post("/signup", (req, res) => {
     html: `
       <h2>Welcome to Designate, ${name}!</h2>
       <p>Please verify your email by clicking the link below:</p>
-      <a href="${PUBLIC_URL}/verify?token=${verificationToken}">Verify Email</a>
+      <a href="${BASE_URL}/verify?token=${verificationToken}">Verify Email</a>
     `
   };
 

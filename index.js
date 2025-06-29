@@ -92,8 +92,9 @@ app.post("/signup", (req, res) => {
     html: `
       <h2>Welcome to Designate, ${name}!</h2>
       <p>Please verify your email by clicking the link below:</p>
-      <p>Please verify your email by clicking the link below:</p>
-      <p><a href="${BASE_URL}/verify?token=${verificationToken}">${BASE_URL}/verify?token=${verificationToken}</a></p>
+      <p><a href="${BASE_URL.replace(/\/$/, "")}/verify?token=${verificationToken}">
+        ${BASE_URL.replace(/\/$/, "")}/verify?token=${verificationToken}
+      </a></p>
     `
   };
 

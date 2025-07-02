@@ -86,6 +86,32 @@
       box-shadow: 0 8px 20px rgba(239, 68, 68, 0.6);
     }
 
+    .payment-method {
+      margin-top: 30px;
+    }
+
+    .payment-method a {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px 15px;
+      border-radius: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .payment-method a:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .payment-method img {
+      height: 30px;
+      margin-right: 10px;
+    }
+
     @keyframes fadeInUp {
       0% { opacity: 0; transform: translateY(40px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -108,7 +134,7 @@
       border: none;
       border-radius: 30px;
       cursor: pointer;
-      color: black; /* Fixed: Make home button text black */
+      color: black;
       font-weight: bold;
     }
 
@@ -141,6 +167,14 @@
   <div class="container">
     <div id="welcome-message">Welcome to your dashboard!</div>
     <button id="logout-btn">Log Out</button>
+
+    <!-- Cash App Payment Method Section -->
+    <div class="payment-method">
+      <a href="https://cash.app/$designatellc1" target="_blank">
+        <img src="Cash-App-Logo-256X256.webp" alt="Cash App Logo">
+        $designatellc1
+      </a>
+    </div>
   </div>
 
   <button id="home-btn">Home</button>

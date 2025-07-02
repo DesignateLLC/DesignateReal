@@ -106,21 +106,23 @@
 
     button[type="submit"],
     .login-btn {
-      background: linear-gradient(to right, #FFD700, #FFB700);
+      background-color: #FFD700;
       color: #000;
       border: none;
-      padding: 12px 25px;
-      font-size: 1rem;
+      padding: 12px 20px;
+      font-size: 16px;
       border-radius: 30px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 20px;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      max-width: 300px;
+      margin: 20px auto 0;
+      display: block;
     }
 
     button[type="submit"]:hover,
     .login-btn:hover {
-      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
-      transform: scale(1.05);
+      background-color: #c9a500;
     }
 
     a {

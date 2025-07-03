@@ -16,16 +16,16 @@
       background: linear-gradient(135deg, #000000, #1a1a1a, #333333);
       background-size: 300% 300%;
       animation: bgShift 20s ease infinite;
-      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       position: relative;
-      overflow: hidden;
+      overflow-y: auto;
       transition: background 0.3s ease;
       color: white;
       padding: 20px;
+      min-height: 100vh;
     }
 
     @keyframes bgShift {
@@ -61,6 +61,7 @@
       width: 90%;
       max-width: 500px;
       animation: fadeInUp 1.2s ease both;
+      margin-bottom: 100px;
     }
 
     #welcome-message {
@@ -166,7 +167,7 @@
         height: auto;
         width: 100%;
         max-width: 300px;
-        margin: 0 auto;
+        margin: 0 auto 15px;
       }
 
       .payment-method img {
@@ -185,11 +186,35 @@
     <div id="welcome-message">Welcome to your dashboard!</div>
     <button id="logout-btn">Log Out</button>
 
-    <!-- Cash App Payment Method Section -->
+    <!-- Cash App -->
     <div class="payment-method">
       <a href="https://cash.app/$designatellc1" target="_blank">
         <img src="Cashapp Logo.png" alt="Cash App Logo">
         $designatellc1
+      </a>
+    </div>
+
+    <!-- Venmo -->
+    <div class="payment-method">
+      <a href="https://venmo.com/u/designatellc" target="_blank">
+        <img src="Venmo Logo.png" alt="Venmo Logo">
+        @designatellc
+      </a>
+    </div>
+
+    <!-- Square -->
+    <div class="payment-method">
+      <a href="https://square.link/u/designatellc" target="_blank">
+        <img src="Square Logo.png" alt="Square Logo">
+        square.link/u/designatellc
+      </a>
+    </div>
+
+    <!-- PayPal -->
+    <div class="payment-method">
+      <a href="https://paypal.me/designatellc" target="_blank">
+        <img src="Paypal Logo.png" alt="PayPal Logo">
+        paypal.me/designatellc
       </a>
     </div>
   </div>

@@ -100,14 +100,15 @@
       justify-content: flex-start;
       text-decoration: none;
       color: white;
-      font-size: 1.1rem;
+      font-size: clamp(1rem, 2.5vw, 1.1rem);
       font-weight: bold;
       background: rgba(255, 255, 255, 0.3);
-      padding: 10px 15px;
+      padding: clamp(8px, 2vw, 15px) clamp(10px, 3vw, 15px);
       border-radius: 12px;
       transition: background 0.3s ease;
       width: 100%;
-      max-width: 350px;
+      max-width: clamp(300px, 80vw, 350px);
+      min-height: clamp(50px, 8vw, 65px);
     }
 
     .payment-method a:hover {
@@ -115,18 +116,15 @@
     }
 
     .payment-method img {
-      width: 40px;
-      height: 40px;
+      width: clamp(35px, 5vw, 45px);
+      height: clamp(35px, 5vw, 45px);
       object-fit: contain;
       object-position: center;
-      margin-right: 15px;
+      margin-right: clamp(10px, 2vw, 15px);
       flex-shrink: 0;
-    }
-
-    .payment-method img[src="PayPal Logo.png"] {
-      width: 55px;
-      height: 55px;
-      margin-left: -7px; /* Adjust this value as needed for alignment */
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @keyframes fadeInUp {
@@ -174,18 +172,9 @@
       }
 
       .payment-method a {
-        flex-direction: row;
-        justify-content: center;
-        font-size: 1rem;
-        padding: 6px 8px;
-        height: auto;
-        width: 100%;
-        max-width: 300px;
-        margin: 0 auto 15px;
-      }
-
-      .payment-method img {
-        margin-right: 8px;
+        justify-content: flex-start;
+        padding: clamp(6px, 1.5vw, 10px) clamp(8px, 2vw, 12px);
+        max-width: clamp(280px, 90vw, 320px);
       }
     }
   </style>

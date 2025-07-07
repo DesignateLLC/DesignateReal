@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Designate - Profile</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #000000, #1a1a1a, #333333);
+      background-size: 300% 300%;
+      animation: bgShift 20s ease infinite;
+      color: #FFD700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      margin: 0;
+      position: relative;
+    }
+
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .info {
+      font-size: 1.1rem;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .reset-password {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .reset-password p {
+      margin-bottom: 5px;
+    }
+
+    .reset-password button {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      padding: 8px 18px;
+      font-size: 14px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .reset-password button:hover {
+      background-color: #c9a500;
+    }
+
+    #dashboard-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 1000;
+      padding: 10px 20px;
+      background: rgba(255, 215, 0, 0.8);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      color: black;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    #dashboard-btn:hover {
+      background-color: #c9a500;
+    }
+
+    #home-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 10px 20px;
+      background: rgba(255, 215, 0, 0.8);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      color: black;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    #home-btn:hover {
+      background-color: #c9a500;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .info {
+        font-size: 1rem;
+      }
+
+      #dashboard-btn, #home-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+
+      #dashboard-btn {
+        bottom: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Profile</h1>
+  <div class="info" id="name">Loading name...</div>
+  <div class="info" id="email">Loading email...</div>
+  <div class="info" id="created">Loading date...</div>
+
+  <div class="reset-password">
+    <p>Forgot your password?</p>
+    <button onclick="window.location.href='/reset_password.html'">Reset it here</button>
+  </div>
+
+  <button id="dashboard-btn" onclick="window.location.href='/dashboard.html'">Dashboard</button>
+  <button id="home-btn" onclick="window.location.href='/'">Home</button>
+
+  <script>
+    fetch('/api/profile')
+      .then(res => {
+        if (!res.ok) throw new Error("Not authorized");
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById('name').textContent = `Name: ${data.name}`;
+        document.getElementById('email').textContent = `Email: ${data.email}`;
+        document.getElementById('created').textContent = `Account Created: ${new Date(data.createdAt).toLocaleDateString()}`;
+      })
+      .catch(() => {
+        document.body.innerHTML = '<p>You must be logged in to view this page.</p>';
+      });
+  </script>
+</body>
+</html>

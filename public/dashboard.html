@@ -1,3 +1,4 @@
+<!-- BEGIN FINAL DASHBOARD.HTML WITH FIXES -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +23,7 @@
       justify-content: flex-start;
       position: relative;
       overflow-y: auto;
+      overflow-x: hidden;
       transition: background 0.3s ease;
       color: white;
       padding: 20px;
@@ -69,7 +71,7 @@
       margin-bottom: 25px;
     }
 
-    #logout-btn {
+    #logout-btn, #profile-btn {
       background: linear-gradient(to right, #ef4444, #f87171);
       color: white;
       border: none;
@@ -82,9 +84,19 @@
       margin: 10px;
     }
 
+    #profile-btn {
+      background: linear-gradient(to right, #3b82f6, #60a5fa);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+    }
+
     #logout-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(239, 68, 68, 0.6);
+    }
+
+    #profile-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.6);
     }
 
     .payment-method {
@@ -163,26 +175,46 @@
 
     @media (max-width: 480px) {
       .title {
-        font-size: 2.2rem;
+        font-size: 2rem;
+        text-align: center;
       }
 
       .container {
-        padding: 25px 20px;
+        padding: 20px 15px;
+        max-width: 95vw;
       }
 
       #welcome-message {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
       }
 
-      #logout-btn {
-        padding: 10px 20px;
-        font-size: 14px;
+      #logout-btn, #profile-btn {
+        padding: 8px 16px;
+        font-size: 13px;
       }
 
       .payment-method a {
-        justify-content: flex-start;
-        padding: clamp(6px, 1.5vw, 10px) clamp(8px, 2vw, 12px);
-        max-width: clamp(280px, 90vw, 320px);
+        padding: 10px 12px;
+        max-width: 92vw;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+      }
+
+      .payment-method img {
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+      }
+
+      .payment-method img[src="PayPal Logo.png"] {
+        width: 45px;
+        height: 45px;
+        margin-left: -5px;
+      }
+
+      #home-btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
       }
     }
   </style>
@@ -196,32 +228,27 @@
   <div class="container">
     <div id="welcome-message">Welcome to your dashboard!</div>
     <button id="logout-btn">Log Out</button>
+    <button id="profile-btn">Go to Profile</button>
 
-    <!-- Cash App -->
+    <!-- Payment Methods -->
     <div class="payment-method">
       <a href="https://cash.app/$designatellc1" target="_blank">
         <img src="Cashapp Logo.png" alt="Cash App Logo">
         Cashapp
       </a>
     </div>
-
-    <!-- Venmo -->
     <div class="payment-method">
       <a href="https://venmo.com/u/designatellc" target="_blank">
         <img src="Venmo Logo.png" alt="Venmo Logo">
         Venmo
       </a>
     </div>
-
-    <!-- PayPal -->
     <div class="payment-method">
       <a href="https://www.paypal.com/ncp/payment/U2M2LDLRW4E2C" target="_blank">
         <img src="PayPal Logo.png" alt="PayPal Logo">
         PayPal
       </a>
     </div>
-
-    <!-- Square -->
     <div class="payment-method">
       <a href="https://square.link/u/bBFA1y24" target="_blank">
         <img src="Square Logo.png" alt="Square Logo">
@@ -246,6 +273,10 @@
     document.getElementById('logout-btn').addEventListener('click', async () => {
       await fetch('/logout', { method: 'POST' });
       window.location.href = '/login.html';
+    });
+
+    document.getElementById('profile-btn').addEventListener('click', () => {
+      window.location.href = '/profile.html';
     });
 
     document.getElementById("home-btn").addEventListener("click", function() {
@@ -302,3 +333,4 @@
   </script>
 </body>
 </html>
+<!-- END FINAL DASHBOARD.HTML WITH FIXES -->

@@ -4,7 +4,7 @@ const path = require("path");
 const session = require("express-session");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb"); // <== UPDATED
 require("dotenv").config();
 
 const app = express();
@@ -127,7 +127,9 @@ app.post("/login", async (req, res) => {
   if (!user.isVerified) return res.status(403).send("Login failed: Email not verified. Please check your email.");
   if (user.password !== password) return res.status(400).send("Login failed: Incorrect password");
 
-  req.session.user = { name: user.name, email: user.email };
+  // ✅ UPDATED to include user._id
+  req.session.user = { _id: user._id, name: user.name, email: user.email };
+
   res.send(`Welcome back, ${user.name}! You are logged in.`);
 });
 
@@ -242,6 +244,25 @@ app.get("/admin/user-count", async (req, res) => {
 
   const count = await usersCollection.countDocuments();
   res.json({ userCount: count });
+});
+
+// =====================
+// Profile API
+// =====================
+app.get("/api/profile", async (req, res) => {
+  if (!req.session.user || !req.session.user._id) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const user = await usersCollection.findOne({ _id: new ObjectId(req.session.user._id) });
+
+  if (!user) return res.status(404).send("User not found");
+
+  res.json({
+    name: user.name,
+    email: user.email,
+    createdAt: user.createdAt || user._id.getTimestamp()
+  });
 });
 
 // =====================
